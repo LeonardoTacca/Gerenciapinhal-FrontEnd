@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gerencia_manutencao/maquinas/cadastro_de_maquinas_page.dart';
+import 'package:gerencia_manutencao/pecas/cadastro_pecas_page.dart';
+import 'package:gerencia_manutencao/usuarios/cadastro_usuarios_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -40,7 +43,14 @@ class _HomePageState extends State<HomePage> {
         icon: const Icon(Icons.settings),
       ),
       SideMenuItem(
-        title: 'Gerenciamento de maquinas',
+        title: 'Cadastro de Peças',
+        onTap: (index, sideMenuController) {
+          sideMenuController.changePage(index);
+        },
+        icon: const Icon(Icons.settings),
+      ),
+      SideMenuItem(
+        title: 'Cadastro de Maquinas',
         onTap: (index, sideMenuController) {
           sideMenuController.changePage(index);
         },
@@ -66,11 +76,11 @@ class _HomePageState extends State<HomePage> {
                   controller: controllerTelas,
                   children: const [
                     Center(
-                      child: Text('Bem vindo ao gerenciador de manutenção'),
+                      child: Text('Dashboard'),
                     ),
-                    Center(
-                      child: Text('Exit'),
-                    ),
+                    CadastroUsuariosPage(),
+                    CadastroPecasPage(),
+                    CadastroMaquinasPage(),
                     Center(
                       child: Text('Exit'),
                     ),
