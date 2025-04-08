@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gerencia_manutencao/usuarios/cadastro_usuarios_service.dart';
+import 'package:gerencia_manutencao/usuarios/usuario.dart';
 
 class CadastroUsuariosPage extends StatefulWidget {
-  const CadastroUsuariosPage({super.key});
+  final Usuario? usuario;
+  const CadastroUsuariosPage({super.key, this.usuario});
 
   @override
   State<CadastroUsuariosPage> createState() => _CadastroUsuariosPageState();

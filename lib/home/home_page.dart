@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:gerencia_manutencao/maquinas/cadastro_de_maquinas_page.dart';
 import 'package:gerencia_manutencao/pecas/cadastro_pecas_page.dart';
 import 'package:gerencia_manutencao/usuarios/cadastro_usuarios_page.dart';
+import 'package:gerencia_manutencao/usuarios/listagem_usuarios_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                     Center(
                       child: Text('Dashboard'),
                     ),
-                    CadastroUsuariosPage(),
+                    ListaUsuariosPage(),
                     CadastroPecasPage(),
                     CadastroMaquinasPage(),
                     Center(
