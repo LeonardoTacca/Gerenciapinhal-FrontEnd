@@ -3,7 +3,7 @@ import 'package:gerencia_manutencao/models/ordem_manutencao.dart';
 
 import '../models/item_ordem.dart';
 import '../models/maquina.dart';
-import '../models/peca';
+import '../models/peca.dart';
 
 class DetalhesOrdemPage extends StatefulWidget {
   final OrdemManutencao ordem;

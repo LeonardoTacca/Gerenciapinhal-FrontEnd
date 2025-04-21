@@ -40,52 +40,67 @@ class _CriarOrdemManutencaoPageState extends State<CriarOrdemManutencaoPage> {
       appBar: AppBar(title: const Text('Criar Ordem de Manutenção')),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              DropdownButtonFormField<String>(
-                value: maquinaId,
-                items: widget.maquinas.map((m) {
-                  return DropdownMenuItem(value: m.id, child: Text(m.descricao));
-                }).toList(),
-                onChanged: (value) => setState(() => maquinaId = value),
-                decoration: const InputDecoration(labelText: 'Máquina'),
-                validator: (value) => value == null ? 'Selecione uma máquina' : null,
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                value: genero,
-                items: ['hidraulica', 'mecanica', 'eletrica']
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                    .toList(),
-                onChanged: (value) => setState(() => genero = value),
-                decoration: const InputDecoration(labelText: 'Gênero da Manutenção'),
-              ),
-              DropdownButtonFormField<String>(
-                value: especie,
-                items: ['corretiva', 'preventiva'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-                onChanged: (value) => setState(() => especie = value),
-                decoration: const InputDecoration(labelText: 'Espécie da Manutenção'),
-              ),
-              DropdownButtonFormField<String>(
-                value: tipoManutencao,
-                items: ['interno', 'externo'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-                onChanged: (value) => setState(() => tipoManutencao = value),
-                decoration: const InputDecoration(labelText: 'Tipo de Manutenção'),
-              ),
-              DropdownButtonFormField<String>(
-                value: tipoEstoque,
-                items: ['cidade', 'estoque'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-                onChanged: (value) => setState(() => tipoEstoque = value),
-                decoration: const InputDecoration(labelText: 'Tipo de Estoque'),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _criarOrdem,
-                child: const Text('Criar Ordem'),
-              ),
-            ],
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                DropdownButtonFormField<String>(
+                  value: maquinaId,
+                  items: widget.maquinas.map((m) {
+                    return DropdownMenuItem(value: m.id, child: Text(m.descricao));
+                  }).toList(),
+                  onChanged: (value) => setState(() => maquinaId = value),
+                  decoration: const InputDecoration(labelText: 'Máquina'),
+                  validator: (value) => value == null ? 'Selecione uma máquina' : null,
+                ),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  value: genero,
+                  items: ['hidraulica', 'mecanica', 'eletrica']
+                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                      .toList(),
+                  onChanged: (value) => setState(() => genero = value),
+                  decoration: const InputDecoration(labelText: 'Gênero da Manutenção'),
+                ),
+                DropdownButtonFormField<String>(
+                  value: especie,
+                  items: ['corretiva', 'preventiva'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                  onChanged: (value) => setState(() => especie = value),
+                  decoration: const InputDecoration(labelText: 'Espécie da Manutenção'),
+                ),
+                DropdownButtonFormField<String>(
+                  value: tipoManutencao,
+                  items: ['interno', 'externo'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                  onChanged: (value) => setState(() => tipoManutencao = value),
+                  decoration: const InputDecoration(labelText: 'Tipo de Manutenção'),
+                ),
+                DropdownButtonFormField<String>(
+                  value: tipoEstoque,
+                  items: ['cidade', 'estoque'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                  onChanged: (value) => setState(() => tipoEstoque = value),
+                  decoration: const InputDecoration(labelText: 'Tipo de Estoque'),
+                ),
+                const SizedBox(height: 24),
+                GestureDetector(
+                  onTap: () {
+                    _criarOrdem();
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.03,
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.blue[400]),
+                    child: const Center(
+                      child: Text(
+                        'Criar Ordem',
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

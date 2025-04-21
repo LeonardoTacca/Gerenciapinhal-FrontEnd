@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gerencia_manutencao/models/maquina.dart';
 
 import '../models/ordem_manutencao.dart';
-import '../models/peca';
+import '../models/peca.dart';
 import 'Criar_Ordem_Manutencao_page.dart';
 import 'detalhes_ordem_page.dart';
 
@@ -20,8 +20,8 @@ class _ListaOrdensManutencaoPageWrapperState extends State<ListaOrdensManutencao
   ];
 
   final List<Peca> pecasDisponiveis = [
-    Peca(id: '1', codigo: 'P001', descricao: 'Parafuso', unidade: 'un', nivel: 1, valor: 1.5),
-    Peca(id: '2', codigo: 'P002', descricao: 'Engrenagem', unidade: 'un', nivel: 2, valor: 10.0),
+    Peca(id: '1', codigo: 'P001', descricao: 'Parafuso', unidade: UNID.unidade, nivel: 1, valor: 1.5),
+    Peca(id: '2', codigo: 'P002', descricao: 'Engrenagem', unidade: UNID.unidade, nivel: 2, valor: 10.0),
   ];
 
   final List<OrdemManutencao> ordens = [];

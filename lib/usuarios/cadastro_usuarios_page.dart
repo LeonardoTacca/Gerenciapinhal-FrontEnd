@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gerencia_manutencao/home/home_page.dart';
 import 'package:gerencia_manutencao/usuarios/cadastro_usuarios_service.dart';
 import 'package:gerencia_manutencao/usuarios/usuario.dart';
 
@@ -38,7 +39,10 @@ class _CadastroUsuariosPageState extends State<CadastroUsuariosPage> {
                     cadastroUsuariosService.email != null) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     if (mounted) {
-                      Navigator.of(context).pushReplacementNamed('/home');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HomePage()),
+                      );
                     }
                   });
                 }
@@ -77,7 +81,7 @@ class _CadastroUsuariosPageState extends State<CadastroUsuariosPage> {
                                   cadastroUsuariosService.usuario = usuarioController.text;
                                   cadastroUsuariosService.senha = senhaController.text;
                                   cadastroUsuariosService.confirmacaoSenha = confirmacaoSenhaController.text;
-
+                                  cadastroUsuariosService.cargo = _opcaoSelecionada;
                                   cadastroUsuariosService.enviarCadastroDeUsuarios();
                                 }
                               },

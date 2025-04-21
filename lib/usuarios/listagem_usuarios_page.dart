@@ -18,12 +18,14 @@ class _ListaUsuariosPageState extends State<ListaUsuariosPage> {
   @override
   void initState() {
     super.initState();
+    _usuarioService.addListener(_onUsuariosChanged);
+    _carregarUsuarios();
+  }
 
-    Future.delayed(const Duration(seconds: 1), () {
-      _usuarioService.addListener(_onUsuariosChanged);
-      setState(() {
-        isLoading = false;
-      });
+  Future<void> _carregarUsuarios() async {
+    await _usuarioService.carregarUsuarios();
+    setState(() {
+      isLoading = false;
     });
   }
 

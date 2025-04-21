@@ -8,57 +8,56 @@ class CadastroUsuariosService extends ChangeNotifier {
   String? senha;
   String? confirmacaoSenha;
   String? usuario;
+  String? cargo;
   bool precisaRedefinir = true;
 
   // Estado
   bool isLoading = false;
   String? errorMessage;
   Future<void> enviarCadastroDeUsuarios() async {
-    final String baseUrl = "SUA_URL_DO_BACKEND";
-
-    // Dados do usuário
-
-    Future<void> sendDataToBackend() async {
-      if (senha != confirmacaoSenha) {
-        errorMessage = 'As senhas não coincidem';
-        notifyListeners();
-        return;
-      }
-
-      isLoading = true;
-      errorMessage = null;
+    final String baseUrl = "http://localhost:3000";
+    if (senha != confirmacaoSenha) {
+      errorMessage = 'As senhas não coincidem';
       notifyListeners();
+      return;
+    }
 
-      try {
-        final response = await http.post(
-          Uri.parse('$baseUrl/sua-rota'),
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode({
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/usuario/cadastro'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          "usuario": {
             'nome': nome,
             'email': email,
             'senha': senha,
             'usuario': usuario,
             'precisa_redefinir': precisaRedefinir,
-          }),
-        );
-
-        if (response.statusCode == 200) {
-          isLoading = false;
-          notifyListeners();
-        } else {
-          errorMessage = 'Erro no servidor: ${response.statusCode}';
-          if (response.body.isNotEmpty) {
-            final errorData = json.decode(response.body);
-            errorMessage = errorData['message'] ?? errorMessage;
+            'cargo': cargo
           }
-          isLoading = false;
-          notifyListeners();
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        isLoading = false;
+        notifyListeners();
+      } else {
+        errorMessage = 'Erro no servidor: ${response.statusCode}';
+        if (response.body.isNotEmpty) {
+          final errorData = json.decode(response.body);
+          errorMessage = errorData['message'] ?? errorMessage;
         }
-      } catch (e) {
-        errorMessage = 'Erro de conexão: ${e.toString()}';
         isLoading = false;
         notifyListeners();
       }
+    } catch (e) {
+      errorMessage = 'Erro de conexão: ${e.toString()}';
+      isLoading = false;
+      notifyListeners();
     }
   }
 }
