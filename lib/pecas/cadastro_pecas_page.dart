@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gerencia_manutencao/models/peca.dart';
 import 'package:intl/intl.dart';
+
+import 'peca_service.dart';
 
 class CadastroPecasPage extends StatefulWidget {
   const CadastroPecasPage({super.key});
@@ -11,6 +14,7 @@ class CadastroPecasPage extends StatefulWidget {
 
 class _CadastroPecasPageState extends State<CadastroPecasPage> {
   final formKey = GlobalKey<FormState>();
+  final PecaService pecaService = PecaService();
   final TextEditingController codigoController = TextEditingController();
   final TextEditingController descricaoController = TextEditingController();
   final TextEditingController nivelController = TextEditingController();
@@ -49,9 +53,16 @@ class _CadastroPecasPageState extends State<CadastroPecasPage> {
               const SizedBox(height: 24),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (formKey.currentState!.validate()) {
-                      // Processar cadastro da peça
+                      await pecaService.criarPeca(
+                          context,
+                          Peca(
+                              codigo: codigoController.text,
+                              descricao: descricaoController.text,
+                              unidade: unidadeFromString(_unidadeSelecionada!),
+                              nivel: int.parse(nivelController.text),
+                              valor: double.parse(valorController.text)));
                     }
                   },
                   style: ElevatedButton.styleFrom(
