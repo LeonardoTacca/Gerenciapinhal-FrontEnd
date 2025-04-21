@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gerencia_manutencao/models/maquina.dart';
+import 'package:gerencia_manutencao/ordem_manutencao/Ordem_Manutencao_service.dart';
+import 'package:gerencia_manutencao/usuarios/usuario.dart';
 
 import '../maquinas/maquinas_service.dart';
 import '../models/ordem_manutencao.dart';
@@ -18,22 +20,31 @@ class ListaOrdensManutencaoPageWrapper extends StatefulWidget {
 class _ListaOrdensManutencaoPageWrapperState extends State<ListaOrdensManutencaoPageWrapper> {
   final PecaService _pecaService = PecaService();
   final MaquinaService _maquinaService = MaquinaService();
-  final List<OrdemManutencao> ordens = [];
-  bool _isLoading = true;
+  final OrdemManutencaoService ordemManutencaoService = OrdemManutencaoService();
 
   @override
   void initState() {
     super.initState();
     _loadPecas();
+    _loadOrdens();
+  }
+
+  Future<void> _loadOrdens() async {
+    switch (UserData.cargo) {
+      case Cargos.operador:
+        ordemManutencaoService.buscarOrdensFiltradasPorOperador(UserData.id);
+        break;
+      case Cargos.operadorManutencao:
+        ordemManutencaoService.buscarOrdensFiltradasParaManutencao(UserData.id);
+        break;
+      default:
+        ordemManutencaoService.buscarTodasOrdens();
+        break;
+    }
   }
 
   Future<void> _loadPecas() async {
     await _pecaService.buscarTodasPecas(); // Carrega as peças
-    if (mounted) {
-      setState(() {
-        _isLoading = false; // Após carregar as peças, atualiza o estado
-      });
-    }
   }
 
   Future<void> _loadMaquina(OrdemManutencao ordem) async {
@@ -41,20 +52,17 @@ class _ListaOrdensManutencaoPageWrapperState extends State<ListaOrdensManutencao
   }
 
   void _navegarParaCriarOrdem() async {
-    final novaOrdem = await Navigator.push<OrdemManutencao>(
+    Navigator.push<OrdemManutencao>(
       context,
       MaterialPageRoute(
         builder: (context) => const CriarOrdemManutencaoPage(),
       ),
     );
-    if (novaOrdem != null) {
-      setState(() => ordens.add(novaOrdem));
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
+    if (ordemManutencaoService.isLoading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
@@ -66,9 +74,9 @@ class _ListaOrdensManutencaoPageWrapperState extends State<ListaOrdensManutencao
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: ordens.length,
+              itemCount: ordemManutencaoService.ordens.length,
               itemBuilder: (context, index) {
-                final ordem = ordens[index];
+                final ordem = ordemManutencaoService.ordens[index];
 
                 return ListTile(
                   title: Text('Ordem Manutencao Nº ${ordem.id!}'),
@@ -83,6 +91,7 @@ class _ListaOrdensManutencaoPageWrapperState extends State<ListaOrdensManutencao
                     child: const Text('Detalhes'),
                     onPressed: () async {
                       // Carregar a máquina antes de navegar para os detalhes
+
                       await _loadMaquina(ordem);
                       Navigator.push(
                           context,

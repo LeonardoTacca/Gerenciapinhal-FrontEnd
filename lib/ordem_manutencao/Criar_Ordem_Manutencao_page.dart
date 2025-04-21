@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gerencia_manutencao/maquinas/maquinas_service.dart';
-import 'package:gerencia_manutencao/ordem_manutencao/Criar_Ordem_Manutencao_service.dart';
+import 'package:gerencia_manutencao/ordem_manutencao/Ordem_Manutencao_service.dart';
 
 import '../models/ordem_manutencao.dart';
 

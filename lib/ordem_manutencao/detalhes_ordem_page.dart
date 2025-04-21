@@ -20,12 +20,11 @@ class _DetalhesOrdemPageState extends State<DetalhesOrdemPage> {
   String? pecaSelecionada;
   int quantidade = 1;
 
-  void _adicionarItem() {
-    if (pecaSelecionada != null && quantidade > 0) {
-      setState(() {
-        widget.ordem.itens.add(ItemOrdem(idPeca: pecaSelecionada!, quantidade: quantidade));
-      });
-    }
+  void _adicionarItem() {}
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override

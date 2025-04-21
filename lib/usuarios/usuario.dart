@@ -86,3 +86,9 @@ Cargos cargoFromString(String value) {
       return Cargos.operador;
   }
 }
+
+class UserData {
+  static Cargos cargo = Cargos.operador;
+  static String nome = '';
+  static String id = '';
+}
