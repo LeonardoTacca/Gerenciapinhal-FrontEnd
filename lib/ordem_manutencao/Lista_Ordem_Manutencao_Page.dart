@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gerencia_manutencao/models/maquina.dart';
 
+import '../maquinas/maquinas_service.dart';
 import '../models/ordem_manutencao.dart';
 import '../models/peca.dart';
+import '../pecas/peca_service.dart';
 import 'Criar_Ordem_Manutencao_page.dart';
 import 'detalhes_ordem_page.dart';
 
@@ -14,23 +16,35 @@ class ListaOrdensManutencaoPageWrapper extends StatefulWidget {
 }
 
 class _ListaOrdensManutencaoPageWrapperState extends State<ListaOrdensManutencaoPageWrapper> {
-  final List<Maquina> maquinasDisponiveis = [
-    Maquina(id: '1', descricao: 'Torno CNC', nivel: 'A', valor: 10000, disponibilidadeDeUso: 1, codigo: 'T001'),
-    Maquina(id: '2', descricao: 'Fresadora XYZ', nivel: 'B', valor: 8500, disponibilidadeDeUso: 1, codigo: 'F002'),
-  ];
-
-  final List<Peca> pecasDisponiveis = [
-    Peca(id: '1', codigo: 'P001', descricao: 'Parafuso', unidade: UNID.unidade, nivel: 1, valor: 1.5),
-    Peca(id: '2', codigo: 'P002', descricao: 'Engrenagem', unidade: UNID.unidade, nivel: 2, valor: 10.0),
-  ];
-
+  final PecaService _pecaService = PecaService();
+  final MaquinaService _maquinaService = MaquinaService();
   final List<OrdemManutencao> ordens = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPecas();
+  }
+
+  Future<void> _loadPecas() async {
+    await _pecaService.buscarTodasPecas(); // Carrega as peças
+    if (mounted) {
+      setState(() {
+        _isLoading = false; // Após carregar as peças, atualiza o estado
+      });
+    }
+  }
+
+  Future<void> _loadMaquina(OrdemManutencao ordem) async {
+    await _maquinaService.buscarMaquinaPorId(ordem.maquinaId);
+  }
 
   void _navegarParaCriarOrdem() async {
     final novaOrdem = await Navigator.push<OrdemManutencao>(
       context,
       MaterialPageRoute(
-        builder: (context) => CriarOrdemManutencaoPage(maquinas: maquinasDisponiveis),
+        builder: (context) => const CriarOrdemManutencaoPage(),
       ),
     );
     if (novaOrdem != null) {
@@ -40,39 +54,56 @@ class _ListaOrdensManutencaoPageWrapperState extends State<ListaOrdensManutencao
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Ordens de Manutenção')),
-      body: ListView.builder(
-        itemCount: ordens.length,
-        itemBuilder: (context, index) {
-          final ordem = ordens[index];
-          final maquina = maquinasDisponiveis.firstWhere((m) => m.id == ordem.maquinaId);
-          return ListTile(
-            title: Text(maquina.descricao),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Status: ${ordem.status}'),
-                Text('Tipo: ${ordem.tipoManutencao}'),
-              ],
-            ),
-            trailing: ElevatedButton(
-              child: const Text('Detalhes'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetalhesOrdemPage(ordem: ordem, maquina: maquina, pecas: pecasDisponiveis),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: ordens.length,
+              itemBuilder: (context, index) {
+                final ordem = ordens[index];
+
+                return ListTile(
+                  title: Text('Ordem Manutencao Nº ${ordem.id!}'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Status: ${ordem.status}'),
+                      Text('Tipo: ${ordem.tipoManutencao}'),
+                    ],
+                  ),
+                  trailing: ElevatedButton(
+                    child: const Text('Detalhes'),
+                    onPressed: () async {
+                      // Carregar a máquina antes de navegar para os detalhes
+                      await _loadMaquina(ordem);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetalhesOrdemPage(
+                              ordem: ordem,
+                              maquina: _maquinaService.maquina!,
+                              pecas: _pecaService.pecas,
+                            ),
+                          ));
+                    },
                   ),
                 );
               },
             ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _navegarParaCriarOrdem,
-        child: const Icon(Icons.add),
+          ),
+          FloatingActionButton(
+            onPressed: _navegarParaCriarOrdem,
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }

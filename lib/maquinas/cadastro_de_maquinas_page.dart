@@ -1,7 +1,7 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gerencia_manutencao/home/home_page.dart';
+import 'package:gerencia_manutencao/maquinas/maquinas_service.dart';
 import 'package:intl/intl.dart';
 
 class CadastroMaquinasPage extends StatefulWidget {
@@ -19,12 +19,18 @@ class _CadastroMaquinasPageState extends State<CadastroMaquinasPage> {
   final TextEditingController valorController = TextEditingController();
   final TextEditingController disponibilidadeController = TextEditingController();
 
+  final MaquinaService _maquinaService = MaquinaService();
+
   final _currencyFormatter = FilteringTextInputFormatter.digitsOnly;
 
   String _formatCurrency(String value) {
     if (value.isEmpty) return '';
     final number = double.parse(value) / 100;
     return NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(number);
+  }
+
+  double _parseCurrency(String value) {
+    return double.tryParse(value.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0.0;
   }
 
   @override
@@ -51,11 +57,7 @@ class _CadastroMaquinasPageState extends State<CadastroMaquinasPage> {
               const SizedBox(height: 24),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      // Processar cadastro da máquina
-                    }
-                  },
+                  onPressed: _maquinaService.isLoading ? null : _submit,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
                     backgroundColor: Colors.blue,
@@ -63,10 +65,12 @@ class _CadastroMaquinasPageState extends State<CadastroMaquinasPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
-                    'Cadastrar Máquina',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+                  child: _maquinaService.isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          'Cadastrar Máquina',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
                 ),
               ),
             ],
@@ -74,6 +78,32 @@ class _CadastroMaquinasPageState extends State<CadastroMaquinasPage> {
         ),
       ),
     );
+  }
+
+  void _submit() async {
+    if (formKey.currentState!.validate()) {
+      final sucesso = await _maquinaService.cadastrarMaquina(
+        codigo: codigoController.text,
+        descricao: descricaoController.text,
+        nivel: nivelController.text,
+        valor: _parseCurrency(valorController.text) / 100,
+        disponibilidadeDeUso: int.parse(disponibilidadeController.text),
+      );
+
+      if (sucesso) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Máquina cadastrada com sucesso!')),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Erro ao cadastrar máquina.')),
+        );
+      }
+    }
   }
 
   Widget _buildTextField(String label, TextEditingController controller,
