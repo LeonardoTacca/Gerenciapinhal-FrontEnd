@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gerencia_manutencao/models/ordem_manutencao.dart';
+import 'package:gerencia_manutencao/ordem_manutencao/itens_ordem_service.dart';
 
 import '../models/item_ordem.dart';
 import '../models/maquina.dart';
@@ -19,11 +20,19 @@ class DetalhesOrdemPage extends StatefulWidget {
 class _DetalhesOrdemPageState extends State<DetalhesOrdemPage> {
   String? pecaSelecionada;
   int quantidade = 1;
+  ItensOrdemService itensOrdemService = ItensOrdemService();
+  Future<void> _adicionarItem() async {
+    await itensOrdemService.adicionarItemsOrdem(
+        ItemOrdem(idPeca: pecaSelecionada!, quantidade: quantidade, idOrdemManutencao: widget.ordem.id!));
+  }
 
-  void _adicionarItem() {}
+  Future<void> _buscarPecasOrdem() async {
+    await itensOrdemService.buscarItemsOrdem(widget.ordem.id!);
+  }
 
   @override
   void initState() {
+    _buscarPecasOrdem();
     super.initState();
   }
 
@@ -44,7 +53,7 @@ class _DetalhesOrdemPageState extends State<DetalhesOrdemPage> {
             Text('Tipo de Estoque: ${widget.ordem.tipoEstoque}'),
             const SizedBox(height: 16),
             const Text('Peças Utilizadas:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ...widget.ordem.itens.map((item) {
+            ...itensOrdemService.itemsOrdem.map((item) {
               final peca = widget.pecas.firstWhere((p) => p.id == item.idPeca);
               return Text('${peca.descricao} (Qtd: ${item.quantidade})');
             }),
