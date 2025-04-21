@@ -68,7 +68,7 @@ class ItensOrdemService extends ChangeNotifier {
   Future<void> excluirItemsOrdem(ItemOrdem item) async {
     setLoading(true);
     try {
-      final response = await http.post(
+      final response = await http.delete(
         Uri.parse('http://localhost:3000/ItemsOrdem/excluir-item'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'idItem': item.id}),
