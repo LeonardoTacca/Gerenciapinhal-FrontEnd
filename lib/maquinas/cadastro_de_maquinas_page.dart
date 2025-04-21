@@ -57,7 +57,7 @@ class _CadastroMaquinasPageState extends State<CadastroMaquinasPage> {
               const SizedBox(height: 24),
               Center(
                 child: ElevatedButton(
-                  onPressed: _maquinaService.isLoading ? null : _submit,
+                  onPressed: _maquinaService.isLoading ? null : _submit(context),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
                     backgroundColor: Colors.blue,
@@ -80,7 +80,7 @@ class _CadastroMaquinasPageState extends State<CadastroMaquinasPage> {
     );
   }
 
-  void _submit() async {
+  _submit(context) async {
     if (formKey.currentState!.validate()) {
       final sucesso = await _maquinaService.cadastrarMaquina(
         codigo: codigoController.text,
