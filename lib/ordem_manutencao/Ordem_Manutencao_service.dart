@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:gerencia_manutencao/models/ordem_manutencao.dart';
@@ -49,7 +48,7 @@ class OrdemManutencaoService extends ChangeNotifier {
         ordens = data.map((e) => OrdemManutencao.fromMap(e)).toList();
         notifyListeners();
       } else {
-        debugPrint('Erro ao criar ordem: ${response.statusCode}');
+        debugPrint('Erro ao buscar todas as ordens: ${response.statusCode}');
         ordens = [];
         notifyListeners();
       }
@@ -73,7 +72,7 @@ class OrdemManutencaoService extends ChangeNotifier {
         ordens = data.map((e) => OrdemManutencao.fromMap(e)).toList();
         notifyListeners();
       } else {
-        debugPrint('Erro ao criar ordem: ${response.statusCode}');
+        debugPrint('Erro ao buscar ordem por manutentor: ${response.statusCode}');
         ordens = [];
         notifyListeners();
       }
@@ -99,7 +98,7 @@ class OrdemManutencaoService extends ChangeNotifier {
         ordens = data.map((e) => OrdemManutencao.fromMap(e)).toList();
         notifyListeners();
       } else {
-        debugPrint('Erro ao criar ordem: ${response.statusCode}');
+        debugPrint('Erro ao buscar ordem por operador: ${response.statusCode}');
         ordens = [];
         notifyListeners();
       }

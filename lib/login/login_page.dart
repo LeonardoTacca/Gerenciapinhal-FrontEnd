@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                         label: const Text('Usuario'),
                         border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.blue, width: 2),
+                            borderSide: const BorderSide(color: Colors.green, width: 2),
                             borderRadius: BorderRadius.circular(10))),
                     controller: usuarioController,
                   ),
@@ -63,21 +63,21 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         ),
                         border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.blue, width: 2),
+                            borderSide: const BorderSide(color: Colors.green, width: 2),
                             borderRadius: BorderRadius.circular(10))),
                     controller: senhaController,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: GestureDetector(
-                    child: const Text(
-                      'Esqueci minha senha',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    onTap: () {},
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 10),
+                //   child: GestureDetector(
+                //     child: const Text(
+                //       'Esqueci minha senha',
+                //       style: TextStyle(fontWeight: FontWeight.bold),
+                //     ),
+                //     onTap: () {},
+                //   ),
+                // ),
                 Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: GestureDetector(
@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Container(
                         width: MediaQuery.of(context).size.height * 0.1,
                         height: MediaQuery.of(context).size.height * 0.05,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.blue[400]),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.green[600]),
                         child: const Center(
                           child: Text(
                             'Login',

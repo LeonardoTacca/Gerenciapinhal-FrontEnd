@@ -41,6 +41,7 @@ class PecaService extends ChangeNotifier {
     final url = Uri.parse('http://localhost:3000/peca/criar');
 
     try {
+      print(peca);
       final response = await http.post(url, body: jsonEncode(peca.toMap()));
       if (response.statusCode == 200) {
         _pecas.add(Peca.fromJson(response.body));

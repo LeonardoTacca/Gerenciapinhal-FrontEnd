@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gerencia_manutencao/models/peca.dart';
 import 'package:intl/intl.dart';
-
 import 'peca_service.dart';
 
 class CadastroPecasPage extends StatefulWidget {
@@ -28,6 +27,11 @@ class _CadastroPecasPageState extends State<CadastroPecasPage> {
     if (value.isEmpty) return '';
     final number = double.parse(value) / 100;
     return NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(number);
+  }
+
+  double _parseCurrency(String formatted) {
+    final cleaned = formatted.replaceAll(RegExp(r'[^\d,]'), '').replaceAll(',', '.');
+    return double.tryParse(cleaned) ?? 0.0;
   }
 
   @override
@@ -56,13 +60,15 @@ class _CadastroPecasPageState extends State<CadastroPecasPage> {
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
                       await pecaService.criarPeca(
-                          context,
-                          Peca(
-                              codigo: codigoController.text,
-                              descricao: descricaoController.text,
-                              unidade: unidadeFromString(_unidadeSelecionada!),
-                              nivel: int.parse(nivelController.text),
-                              valor: double.parse(valorController.text)));
+                        context,
+                        Peca(
+                          codigo: codigoController.text,
+                          descricao: descricaoController.text,
+                          unidade: unidadeFromString(_unidadeSelecionada!),
+                          nivel: int.parse(nivelController.text),
+                          valor: _parseCurrency(valorController.text),
+                        ),
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -100,9 +106,10 @@ class _CadastroPecasPageState extends State<CadastroPecasPage> {
                   _currencyFormatter,
                   TextInputFormatter.withFunction((oldValue, newValue) {
                     final text = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
-                    return newValue.copyWith(
-                      text: _formatCurrency(text),
-                      selection: TextSelection.collapsed(offset: _formatCurrency(text).length),
+                    final formatted = _formatCurrency(text);
+                    return TextEditingValue(
+                      text: formatted,
+                      selection: TextSelection.collapsed(offset: formatted.length),
                     );
                   })
                 ]

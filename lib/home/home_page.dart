@@ -4,6 +4,7 @@ import 'package:gerencia_manutencao/maquinas/cadastro_de_maquinas_page.dart';
 import 'package:gerencia_manutencao/ordem_manutencao/Lista_Ordem_Manutencao_Page.dart';
 import 'package:gerencia_manutencao/pecas/cadastro_pecas_page.dart';
 import 'package:gerencia_manutencao/usuarios/listagem_usuarios_page.dart';
+import 'package:gerencia_manutencao/usuarios/usuario.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,58 +16,97 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   PageController controllerTelas = PageController();
   SideMenuController sideMenu = SideMenuController();
+  List<Widget> itensMenuWidget = [];
+  List menuItems = [
+    SideMenuItem(
+      title: 'Dashboard',
+      onTap: (index, sideMenuController) {
+        sideMenuController.changePage(index);
+      },
+      icon: const Icon(Icons.home),
+    ),
+  ];
   @override
   void initState() {
     sideMenu.addListener((index) {
       controllerTelas.jumpToPage(index);
     });
+    processMenuItems();
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    List items = [
-      SideMenuItem(
-        title: 'Dashboard',
-        onTap: (index, sideMenuController) {
-          sideMenuController.changePage(index);
-        },
-        icon: const Icon(Icons.home),
-      ),
-      SideMenuItem(
+  processMenuItems() {
+    if (UserData.cargo == Cargos.administradorGeral || UserData.cargo == Cargos.administradorManutencao) {
+      menuItems.add(SideMenuItem(
         title: 'Gerenciamento de usuarios',
         onTap: (index, sideMenuController) {
           sideMenuController.changePage(index);
         },
         icon: const Icon(Icons.settings),
-      ),
+      ));
+    }
+    if (UserData.cargo == Cargos.administradorGeral || UserData.cargo == Cargos.administradorManutencao) {
+      menuItems.add(
+        SideMenuItem(
+          title: 'Cadastro de Peças',
+          onTap: (index, sideMenuController) {
+            sideMenuController.changePage(index);
+          },
+          icon: const Icon(Icons.settings),
+        ),
+      );
+    }
+    if (UserData.cargo == Cargos.administradorGeral || UserData.cargo == Cargos.administradorManutencao) {
+      menuItems.add(
+        SideMenuItem(
+          title: 'Cadastro de Maquinas',
+          onTap: (index, sideMenuController) {
+            sideMenuController.changePage(index);
+          },
+          icon: const Icon(Icons.settings),
+        ),
+      );
+    }
+    menuItems.add(
       SideMenuItem(
-        title: 'Cadastro de Peças',
+        title: 'Ordens de serviço',
         onTap: (index, sideMenuController) {
           sideMenuController.changePage(index);
         },
         icon: const Icon(Icons.settings),
       ),
+    );
+    menuItems.add(
       SideMenuItem(
-        title: 'Cadastro de Maquinas',
+        title: 'Sair',
         onTap: (index, sideMenuController) {
           sideMenuController.changePage(index);
         },
         icon: const Icon(Icons.settings),
       ),
-      SideMenuItem(
-        title: 'Ordens de manutenção',
-        onTap: (index, sideMenuController) {
-          sideMenuController.changePage(index);
-        },
-        icon: const Icon(Icons.settings),
-      ),
-    ];
+    );
+    processMenuWidgets();
+  }
+
+  processMenuWidgets() {
+    if (UserData.cargo == Cargos.administradorGeral || UserData.cargo == Cargos.administradorManutencao) {
+      itensMenuWidget.add(const ListaUsuariosPage());
+    }
+    if (UserData.cargo == Cargos.administradorGeral || UserData.cargo == Cargos.administradorManutencao) {
+      itensMenuWidget.add(const CadastroPecasPage());
+    }
+    if (UserData.cargo == Cargos.administradorGeral || UserData.cargo == Cargos.administradorManutencao) {
+      itensMenuWidget.add(const CadastroMaquinasPage());
+    }
+    itensMenuWidget.add(const ListaOrdensManutencaoPageWrapper());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
+        body: SizedBox(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            color: Colors.red[200],
             child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               SideMenu(
                 controller: sideMenu,
@@ -74,20 +114,20 @@ class _HomePageState extends State<HomePage> {
                 onDisplayModeChanged: (mode) {
                   print(mode);
                 },
-                items: items,
+                items: menuItems,
               ),
               Expanded(
                 child: PageView(
                   controller: controllerTelas,
-                  children: const [
-                    Center(
+                  children: [
+                    const Center(
                       child: Text('Dashboard'),
                     ),
-                    ListaUsuariosPage(),
-                    CadastroPecasPage(),
-                    CadastroMaquinasPage(),
-                    ListaOrdensManutencaoPageWrapper(),
-                    Center(
+                    ListView.builder(
+                      itemBuilder: (context, index) => itensMenuWidget[index],
+                      itemCount: itensMenuWidget.length,
+                    ),
+                    const Center(
                       child: Text('Exit'),
                     ),
                   ],

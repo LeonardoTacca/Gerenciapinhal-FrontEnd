@@ -19,7 +19,7 @@ class _CadastroMaquinasPageState extends State<CadastroMaquinasPage> {
   final TextEditingController valorController = TextEditingController();
   final TextEditingController disponibilidadeController = TextEditingController();
 
-  final MaquinaService _maquinaService = MaquinaService();
+  late MaquinaService _maquinaService;
 
   final _currencyFormatter = FilteringTextInputFormatter.digitsOnly;
 
@@ -34,48 +34,58 @@ class _CadastroMaquinasPageState extends State<CadastroMaquinasPage> {
   }
 
   @override
+  void initState() {
+    _maquinaService = MaquinaService();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Cadastro de Máquinas')),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTextField('Código', codigoController),
-              const SizedBox(height: 16),
-              _buildTextField('Descrição', descricaoController),
-              const SizedBox(height: 16),
-              _buildTextField('Nível', nivelController),
-              const SizedBox(height: 16),
-              _buildTextField('Disponibilidade de Uso', disponibilidadeController,
-                  keyboardType: TextInputType.number, isNumeric: true),
-              const SizedBox(height: 16),
-              _buildTextField('Valor', valorController, keyboardType: TextInputType.number, isCurrency: true),
-              const SizedBox(height: 24),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _maquinaService.isLoading ? null : _submit(context),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: _maquinaService.isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          'Cadastrar Máquina',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+        child: ListenableBuilder(
+            listenable: _maquinaService,
+            builder: (context, _) {
+              return Form(
+                key: formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTextField('Código', codigoController),
+                    const SizedBox(height: 16),
+                    _buildTextField('Descrição', descricaoController),
+                    const SizedBox(height: 16),
+                    _buildTextField('Nível', nivelController),
+                    const SizedBox(height: 16),
+                    _buildTextField('Disponibilidade de Uso', disponibilidadeController,
+                        keyboardType: TextInputType.number, isNumeric: true),
+                    const SizedBox(height: 16),
+                    _buildTextField('Valor', valorController, keyboardType: TextInputType.number, isCurrency: true),
+                    const SizedBox(height: 24),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: _maquinaService.isLoading ? () {} : () => _submit(context),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
+                        child: _maquinaService.isLoading
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : const Text(
+                                'Cadastrar Máquina',
+                                style: TextStyle(fontSize: 18, color: Colors.white),
+                              ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-        ),
+              );
+            }),
       ),
     );
   }
